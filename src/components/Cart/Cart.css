@@ -1,0 +1,15 @@
+.tax {
+    border-bottom: 1px solid gray;
+}
+.cart-button{
+    background-color: goldenrod;
+    font-weight: 600;
+    font-size: small;
+    height: 35px;
+    border: 1px solid darkgray;
+    border-radius: 5px;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+
+}

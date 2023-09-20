@@ -1,0 +1,141 @@
+import { initializeApp } from "firebase/app";
+import firebaseConfig from "./firebase.config";
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+
+
+export const initializeLoginFramework = () => {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  }
+
+
+
+export const googleSignIn = () => {
+  const googleProvider = new GoogleAuthProvider();
+const auth = getAuth();
+return signInWithPopup(auth, googleProvider)
+  .then(res => {
+    const { displayName, email, photoURL } = res.user;
+    const signedInUser = {
+      isSignedIn: true,
+      name: displayName,
+      email: email,
+      photo: photoURL,
+      success: true
+    }
+    return signedInUser;
+    // console.log(displayName, email, photoURL);
+  })
+  .catch(error => {
+    console.log(error);
+    console.log(error.message);
+  })
+}
+
+export const fbSignIn = () => {
+  const fbProvider = new FacebookAuthProvider();
+  const auth = getAuth();
+    return signInWithPopup(auth, fbProvider)
+      .then(function(result) {
+        var token = result.credential.accessToken;
+        var user = result.user;
+        user.success = true;
+        return user;
+        // console.log('sign in after fb user', user);
+      })
+      .catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+}
+export const gitSignIn = () => {
+  const gitProvider = new GithubAuthProvider();
+  const auth = getAuth();
+    return signInWithPopup(auth, gitProvider)
+      .then((result) => {
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        user.success = true;
+        return user;
+        //    console.log('git user',user, token);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GithubAuthProvider.credentialFromError(error);
+        console.log(error, errorCode, errorMessage, email, credential);
+      });
+}
+
+// export const createUserWithEmailAndPassword = (name, email, password) =>{
+//   const auth = getAuth();
+//   return createUserWithEmailAndPassword(auth, email, password)
+//         .then(res => {
+//           const newUserInfo = res.user;
+//           newUserInfo.error = '';
+//           newUserInfo.success = true;
+//           updateUserName(name);
+//           return newUserInfo;
+//         })
+//         .catch(error => {
+//           const newUserInfo = {};
+//           newUserInfo.error = error.message;
+//           newUserInfo.success = false;
+//           return newUserInfo;
+//         })
+// }
+
+// export const signInWithEmailAndPassword = (email, password) => {
+//   const auth = getAuth();
+//   return signInWithEmailAndPassword(auth, email, password)
+//     .then(res => {
+//       const newUserInfo = res.user;
+//       newUserInfo.error = '';
+//       newUserInfo.success = true;
+//       return newUserInfo;
+      
+//     })
+//     .catch(function(error) {
+//       const newUserInfo = {};
+//       newUserInfo.error= error.message;
+//       newUserInfo.success = false;
+//       return newUserInfo;
+//     }
+      
+//     )
+// }
+
+
+
+export const handleSignOut = () => {
+  const auth = getAuth();
+   return signOut(auth)
+    .then(res => {
+      const signedOutUser = {
+        isSignedIn: false,
+        name: '',
+        email: '',
+        photo: '',
+        error: '',
+        success: false
+      }
+       return signedOutUser;
+      // console.log(res);
+    })
+    .catch(error => {
+      console.log(error);
+      console.log(error.message);
+    })
+}
+const updateUserName = name => {
+  const auth = getAuth();
+updateProfile(auth.currentUser, {
+    displayName: name
+  }).then(res => {
+    console.log('user name updated successfully')
+  }).catch(error => {
+    console.log(error);
+  })
+}
